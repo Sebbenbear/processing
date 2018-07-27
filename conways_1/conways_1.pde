@@ -10,18 +10,29 @@ void setup() {
   frameRate(5);
 }
 
+boolean isAlive() {
+  return (int(random(0, 2) % 2) == 1);
+}
+
+void setGreenColour() {
+  stroke(67,160,71);
+  fill(67,160,71);
+}
+
+void setBlackColour() {
+  stroke(55,71,79);
+  fill(55,71,79);
+}
+ 
 void draw() {
   float x = startX;
   float y = 0 + size/2;
   for (float i = 0; i < n; i++) {
     for (float j = 0; j < m; j++) {
-      float randomNumber = int(random(0, 2));
-      if (randomNumber == 0) {
-        stroke(67,160,71);
-        fill(67,160,71);
+      if (isAlive()) {
+        setGreenColour();
       } else {
-        stroke(55,71,79);
-        fill(55,71,79);
+        setBlackColour();
       }
       ellipse(x, y, size, size);
       x += size + 3;
