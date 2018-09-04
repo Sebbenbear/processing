@@ -1,7 +1,7 @@
-int size = 40;
+int size = 2;
 int startX = size/2;
-int n = 10;
-int m = 10;
+int n = 400;
+int m = 400;
 boolean[][] cells = initialiseCells();
 
 boolean[][] initialiseCells() {
@@ -19,10 +19,10 @@ boolean getRandomSeedValue() {
 }
 
 void setup() {
-  size(500, 500); // Change the size of the window
+  size(800, 800); // Change the size of the window
   smooth(); // anti-aliasing on the shapes
-  background(230, 230, 230); // changes the background
-  frameRate(10);
+  background(255, 255, 255); // changes the background
+  frameRate(5);
 }
 
 void setGreenColour() {
@@ -31,12 +31,36 @@ void setGreenColour() {
 }
 
 void setBlackColour() {
-  stroke(55,71,79);
-  fill(55,71,79);
+  stroke(38,50,56);
+  fill(38,50,56);
 }
 
-boolean isAlive(int i, int j) {
-  return !cells[i][j];
+int getNeighbours(int i, int j) {
+  
+  int neighbours = 0;
+  if (i < n-1 && i > 1 && j > 1 && j < m-1) {
+    neighbours += cells[i-1][j-1] ? 1:0;
+    neighbours += cells[i-1][ j ] ? 1:0;
+    neighbours += cells[i-1][j-1] ? 1:0;
+    neighbours += cells[ i ][j-1] ? 1:0;
+    // skip middle
+    neighbours += cells[ i ][j+1] ? 1:0;
+    neighbours += cells[i+1][j-1] ? 1:0;
+    neighbours += cells[i+1][ j ] ? 1:0;
+    neighbours += cells[i+1][j+1] ? 1:0;
+  }
+
+  return neighbours;
+}
+
+boolean isAlive(int i, int j, boolean[][] cellCopy) {
+  int neighbours = getNeighbours(i, j);
+  
+  if (cellCopy[i][j]) {
+    return (neighbours == 2 || neighbours == 3);
+  } else { // Otherwise it's dead, and needs 3 neighbours to become alive again
+    return neighbours == 3;
+  }
 }
  
 void draw() {
@@ -52,19 +76,18 @@ void draw() {
   
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < m; j++) {
-      cellCopy[i][j] = isAlive(i, j);
-      if (cellCopy[i][j]) {
+      cells[i][j] = isAlive(i, j, cellCopy);
+      if (cells[i][j]) {
         setGreenColour();
       } else {
         setBlackColour();
       }
       ellipse(x, y, size, size);
-      x += size + 3;
+      x += size; //+ 3;
     }
-    y += size + 3;
+    y += size; // + 3;
     x = startX;
     
-    // reset the initial cells
-    cells = cellCopy;
+    // reset the initial cell
   }
 }
